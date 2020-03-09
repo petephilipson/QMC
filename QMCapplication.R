@@ -36,14 +36,6 @@ as.numeric(fit.joineRML_biv$comp.time[2], units = "secs")
 as.numeric(fit.joineRML2_biv$comp.time[2], units = "secs")
 as.numeric(fit.joineRML3_biv$comp.time[2], units = "secs")
 
-# Bootstrap - ncores subject to change
-boot1 <- bootSE2(fit.joineRML_biv, nboot = 100, ncores = 4, control = list(type = "montecarlo", nMCmax = 12000, burnin = 5,
-                                                                        tol0 = 1e-03, tol2 = 5e-03, nMCscale = 5))
-boot2 <- bootSE2(fit.joineRML2_biv, nboot = 100, ncores = 4, control = list(type = "antithetic", nMCmax = 12000, burnin = 5,
-                                                                         tol0 = 1e-03, tol2 = 5e-03, nMCscale = 5))
-boot3 <- bootSE2(fit.joineRML3_biv, nboot = 100, ncores = 4, control = list(type = "sobol", nMCmax = 12000, burnin = 5,
-                                                                         tol0 = 1e-03, tol2 = 5e-03, nMCscale = 5), safe.boot = TRUE)
-
 # TRIVARIATE models
 # Use same set-up as in BMC paper
 # Covariate are log(bilirubin), albumin and transformed prothrombin
@@ -55,7 +47,6 @@ fit.joineRML_tri <- mjoint(
   formSurv = Surv(years, status2) ~ age + drug, data = pbc2, timeVar = "year",
   control = list(type = "montecarlo", nMCmax = 12000, burnin = 5,
                  tol0 = 1e-03, tol2 = 5e-03, nMCscale = 5))
-  #control = list(tol0 = 0.001, burnin = 400))MC
 # Antithetic fit
 fit.joineRML2_tri <- mjoint(
   formLongFixed = list("log.bil" = log.b ~ year + age + drug, "alb" = albumin ~ year + age + drug , 
@@ -77,6 +68,6 @@ fit.joineRML3_tri <- mjoint(
 seFun <- function(u) {
   sqrt(diag((vcov(u))))
 }
-seFun(fitPBC_AMC)
+
 
 
